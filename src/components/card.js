@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import {
 	Card,
 	CardImg,
@@ -12,7 +13,7 @@ import {
 export default class Card extends Component {
 	render() {
 		return (
-			<Card>
+			<Card style={styles.cardStyle}>
 				<CardImg
 					top
 					width="100%"
@@ -34,15 +35,7 @@ export default class Card extends Component {
 }
 
 const styles = {
-	cadStyle: {
-		display: "flex",
-		flexDirection: "row",
-		paddingLeft: 10,
-		paddingRight: 10,
-		paddingTop: 13,
-		paddingBottom: 13,
-		borderBottom: "1px solid",
-		borderColor: "#BDBDBD",
-		backgroundColor: "#fff"
+	cardStyle: {
+		width: 318
 	}
 };
