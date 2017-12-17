@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import Header from "./components/header";
+import Header from "./components/Header";
+import CardList from './components/CardWrapper';
 
 class App extends Component {
 	render() {
 		return (
 			<div className="App">
 				<Header />
-				<p className="App-intro" style={style.appIntro}>
-					To get started, edit <code>src/App.js</code> and save to reload.
-				</p>
+				<CardList />
 			</div>
 		);
 	}

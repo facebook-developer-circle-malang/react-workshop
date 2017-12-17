@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { withApollo, graphql, compose } from 'react-apollo';
+import gql from 'graphql-tag';
 
 import {
 	Card,
@@ -6,36 +8,87 @@ import {
 	CardText,
 	CardBody,
 	CardTitle,
-	CardSubtitle,
 	Button
 } from "reactstrap";
 
-export default class Card extends Component {
+import CardModal from './CardModal';
+
+const pokemonQuery = gql`
+	query getDetailPokemon($slug: String!) {
+		getPokemon(slug: $slug) {
+			name
+			data {
+				name
+				value
+			}
+			stats {
+				name
+				value
+			}
+		}
+	}
+`;
+
+class CardList extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			modalIsOpen: false,
+			detailPokemon: {},
+		}
+	}
+
+	toggleModal = () => {
+		this.props.client.query({
+			query: pokemonQuery,
+			variables: {
+				slug: this.props.name.toLowerCase(),
+			}
+		})
+		.then(res => {
+			this.setState({ 
+				modalIsOpen: !this.state.modalIsOpen,
+				detailPokemon: res.data.getPokemon
+			});
+		})
+	}
+
 	render() {
+		if (this.props.loading) {
+			return <span>Loading bos...</span>
+		}
+
 		return (
-			<Card style={styles.cardStyle}>
-				<CardImg
-					top
-					width="100%"
-					src="https://placeholdit.imgix.net/~text?txtsize=33&txt=318%C3%97180&w=318&h=180"
-					alt="Card image cap"
+			<div>
+				<Card style={styles.cardStyle}>
+					<CardImg
+						top
+						width="100%"
+						src={this.props.avatar}
+						alt="Card image cap"
+					/>
+					<CardBody>
+						<CardTitle>{this.props.name}</CardTitle>
+						<CardText>{this.props.desc}</CardText>
+						<Button onClick={this.toggleModal}>Detail</Button>
+					</CardBody>
+				</Card>
+				<CardModal 
+					modal={this.state.modalIsOpen}
+					toggle={this.toggleModal}
+					detailPokemon={this.state.detailPokemon}
 				/>
-				<CardBody>
-					<CardTitle>Card title</CardTitle>
-					<CardSubtitle>Card subtitle</CardSubtitle>
-					<CardText>
-						Some quick example text to build on the card title and make up the
-						bulk of the card's content.
-					</CardText>
-					<Button>Button</Button>
-				</CardBody>
-			</Card>
+			</div>
 		);
 	}
 }
 
 const styles = {
 	cardStyle: {
-		width: 318
+		width: 318,
+		padding: 20,
 	}
 };
+
+export default withApollo(CardList);
